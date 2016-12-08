@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="J8s-mw-ihJ">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="Q9r-lh-zXl">
+            <objects>
+                <viewController id="J8s-mw-ihJ" customClass="ViewController" customModule="Control" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="TNF-KD-ndL"/>
+                        <viewControllerLayoutGuide type="bottom" id="uyR-uP-D01"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6Nj-oJ-hSD">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Cm-8I-Oce" userLabel="Joystick" customClass="SKView">
+                                <gestureRecognizers/>
+                            </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Yf-Tf-Zrh">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Zdw-L8-H0J"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="Px3-d8-e2f" kind="embed" id="0uM-ZN-4Pe"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="4Yf-Tf-Zrh" secondAttribute="trailing" constant="-20" id="9Rs-sA-eVG"/>
+                            <constraint firstItem="uyR-uP-D01" firstAttribute="top" secondItem="4Yf-Tf-Zrh" secondAttribute="bottom" id="GHB-x5-vqo"/>
+                            <constraint firstItem="uyR-uP-D01" firstAttribute="top" secondItem="8Cm-8I-Oce" secondAttribute="bottom" id="M3n-a5-6RW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="8Cm-8I-Oce" secondAttribute="trailing" constant="-20" id="Wz6-CF-d3N"/>
+                            <constraint firstItem="8Cm-8I-Oce" firstAttribute="top" secondItem="TNF-KD-ndL" secondAttribute="bottom" constant="-20" id="Xab-xh-Vew"/>
+                            <constraint firstItem="8Cm-8I-Oce" firstAttribute="leading" secondItem="6Nj-oJ-hSD" secondAttribute="leadingMargin" constant="-20" id="mYa-yT-j3Y"/>
+                            <constraint firstItem="4Yf-Tf-Zrh" firstAttribute="leading" secondItem="6Nj-oJ-hSD" secondAttribute="leadingMargin" constant="-20" id="viT-5e-hXE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="joystickView" destination="8Cm-8I-Oce" id="dXW-Vn-Am2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="md7-k4-1ra" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="98" y="29"/>
+        </scene>
+        <!--Status View Controller-->
+        <scene sceneID="P2C-3h-fAW">
+            <objects>
+                <viewController id="Px3-d8-e2f" customClass="StatusViewController" customModule="Control" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="rfx-cl-bVm"/>
+                        <viewControllerLayoutGuide type="bottom" id="pbr-3R-JTT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="xVf-Rf-BOE">
+                        <rect key="frame" x="0.0" y="0.0" width="383" height="44"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w9p-S1-ekE">
+                                <color key="backgroundColor" red="1" green="0.95709904775712484" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="10" id="Kfv-Td-U68"/>
+                                    <constraint firstAttribute="height" constant="10" id="j6l-Aw-CaJ"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="w9p-S1-ekE" firstAttribute="centerY" secondItem="xVf-Rf-BOE" secondAttribute="centerY" id="0rt-cm-Efj"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="w9p-S1-ekE" secondAttribute="leading" constant="-16" id="BIf-Rm-hMc"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="statusIndicator" destination="w9p-S1-ekE" id="epV-VD-TcD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ntf-dX-dVV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="906" y="28"/>
+        </scene>
+    </scenes>
+</document>
