@@ -49,7 +49,17 @@ class ViewController: UIViewController, BLEDelegate, JoystickSceneDelegate
     
     func joystickScene(didUpdate data: (leftMotorSpeed: Double, rightMotorSpeed: Double))
     {
-        let dataStr = "\(data.leftMotorSpeed),\(data.rightMotorSpeed)&"
+        
+        // -253,-253&
+        
+        var dataStr = "\(Int(data.leftMotorSpeed)),\(Int(data.rightMotorSpeed))&"
+        
+        while dataStr.lengthOfBytes(using: .ascii) < 10 {
+            dataStr += "&"
+        }
+        
+        print(dataStr)
+        
         guard let ap = ble.activePeripheral, ap.state == .connected else { return }
         blewrite(value: dataStr)
     }
@@ -84,9 +94,8 @@ class ViewController: UIViewController, BLEDelegate, JoystickSceneDelegate
         NotificationCenter.default.post(Notifications.bluetoothDidDisconnect)
         if error != nil {
             print(error)
-        } else {
-            ble.startScanning()
         }
+        ble.startScanning()
     }
     
     func bleDidReceiveData(data: NSData?)
