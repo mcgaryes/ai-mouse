@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50D860381E180CA30076D319 /* ControlsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D860371E180CA30076D319 /* ControlsViewController.swift */; };
 		AA80A6B01DE6543F00ACC48C /* UIView+CornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA80A6AF1DE6543F00ACC48C /* UIView+CornerRadius.swift */; };
 		AA80A6B21DE659AE00ACC48C /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA80A6B11DE659AE00ACC48C /* UIColor+Hex.swift */; };
 		AA80A6BA1DE67E8800ACC48C /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA80A6B91DE67E8800ACC48C /* Notifications.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		50D860371E180CA30076D319 /* ControlsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlsViewController.swift; sourceTree = "<group>"; };
 		AA80A6AF1DE6543F00ACC48C /* UIView+CornerRadius.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+CornerRadius.swift"; sourceTree = "<group>"; };
 		AA80A6B11DE659AE00ACC48C /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		AA80A6B91DE67E8800ACC48C /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				AA9613A31DE0A22800528087 /* Main.storyboard */,
 				AA9613A81DE0A22800528087 /* LaunchScreen.storyboard */,
 				AA80A6BB1DE683C600ACC48C /* StatusViewController.swift */,
+				50D860371E180CA30076D319 /* ControlsViewController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				AA9613B41DE0A2D300528087 /* JoystickScene.swift in Sources */,
 				AA80A6B21DE659AE00ACC48C /* UIColor+Hex.swift in Sources */,
 				AA80A6BC1DE683C600ACC48C /* StatusViewController.swift in Sources */,
+				50D860381E180CA30076D319 /* ControlsViewController.swift in Sources */,
 				AA9613A21DE0A22800528087 /* ViewController.swift in Sources */,
 				AA9613B21DE0A26800528087 /* AnalogJoystick.swift in Sources */,
 				AA80A6BA1DE67E8800ACC48C /* Notifications.swift in Sources */,

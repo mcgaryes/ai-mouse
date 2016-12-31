@@ -10,12 +10,12 @@ import UIKit
 import CoreBluetooth
 import SpriteKit
 
-class ViewController: UIViewController, BLEDelegate, JoystickSceneDelegate
+class ViewController: UIViewController, BLEDelegate, ControlsViewControlerDelegate
 {
     
     // MARK: Internal Properties
     
-    @IBOutlet var joystickView: SKView!
+    //@IBOutlet var joystickView: SKView!
     @IBOutlet var dataLabel: UILabel!
 
     // MARK: Internal Methods
@@ -28,40 +28,39 @@ class ViewController: UIViewController, BLEDelegate, JoystickSceneDelegate
     
     override func viewDidLoad()
     {
-        //controlsContainer.alpha = 0.25
-        //controlsContainer.isUserInteractionEnabled = false
         ble = BLE()
         ble.delegate = self
     }
     
     override func viewDidLayoutSubviews()
     {
-        let size = CGSize(width: view.frame.size.width, height: view.frame.size.height)
-        let joystickScene = JoystickScene(size: size)
+//        let size = CGSize(width: view.frame.size.width, height: view.frame.size.height)
+//        let joystickScene = JoystickScene(size: size)
+//        
+//        joystickScene.scaleMode = .resizeFill
+//        joystickScene.joystickDelegate = self
+//        joystickView.presentScene(joystickScene)
         
-        joystickScene.scaleMode = .resizeFill
-        joystickScene.joystickDelegate = self
-        joystickView.presentScene(joystickScene)
-        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "embedControls" {
+            (segue.destination as? ControlsViewController)?.delegate = self
+        }
     }
     
     // MARK: JoystickSceneDelegate Methods
     
-    func joystickScene(didUpdate data: (leftMotorSpeed: Double, rightMotorSpeed: Double))
+    func controlsDidUpdateSpeeds(speeds: (left: Int, right: Int))
     {
-        
-        // -253,-253&
-        
-        var dataStr = "\(Int(data.leftMotorSpeed)),\(Int(data.rightMotorSpeed))&"
-        
-        while dataStr.lengthOfBytes(using: .ascii) < 10 {
-            dataStr += "&"
+        if self.speeds != speeds {
+            self.speeds = speeds
+            var speedsStr = "\(speeds.left),\(speeds.right)"
+            while speedsStr.lengthOfBytes(using: .ascii) < 10 {
+                speedsStr = speedsStr + "&"
+            }
+            blewrite(value: speedsStr)
         }
-        
-        print(dataStr)
-        
-        guard let ap = ble.activePeripheral, ap.state == .connected else { return }
-        blewrite(value: dataStr)
     }
     
     // MARK: BLEDelegate Methods
@@ -92,15 +91,12 @@ class ViewController: UIViewController, BLEDelegate, JoystickSceneDelegate
     func bleDidDisconenct(peripheral:CBPeripheral, error:Error?)
     {
         NotificationCenter.default.post(Notifications.bluetoothDidDisconnect)
-        if error != nil {
-            print(error)
-        }
         ble.startScanning()
     }
     
     func bleDidReceiveData(data: NSData?)
     {
-        print("bleDidReceiveData")
+        //print(data);
     }
     
     // ============================================================
@@ -110,12 +106,13 @@ class ViewController: UIViewController, BLEDelegate, JoystickSceneDelegate
     // MARK: Private Properties
     
     private var ble:BLE!
-    
+    private var speeds:(Int, Int) = (0,0)
     // MARK: Private Methods
     
     private func blewrite(value:String)
     {
         if let data = value.data(using: .utf8) {
+            print(value)
             ble.write(data: NSData(data: data))
         }
     }

@@ -2,29 +2,42 @@
  * Arudio Powered AI Mouse
  * @author mcgaryes@gmail.com
  */
+ 
+#include <SPI.h>
+#include "SparkFun_TB6612.h"
+#include "BleConnectionService.h"
 
-#include <SoftwareSerial.h>
-//#include <SPI.h>
 
-#define PIN_BLUETOOTH_RX              0 // bluetooth pins
-#define PIN_BLUETOOTH_TX              1
-#define PIN_BLUETOOTH_SLAVE           1
+// Motor Pins
 
-#define PIN_LED                       16
+#define PIN_LEFT_POWER                22 // left motor
+#define PIN_LEFT_FORWARD              9
+#define PIN_LEFT_BACKWARD             10
 
-#define PIN_LEFT_POWER                15 // left motor
-#define PIN_LEFT_FORWARD              11
-#define PIN_LEFT_BACKWARD             12
+#define PIN_RIGHT_POWER               23 // right motor
+#define PIN_RIGHT_FORWARD             8
+#define PIN_RIGHT_BACKWARD            7
 
-#define PIN_RIGHT_POWER               14 // right motor
-#define PIN_RIGHT_FORWARD             10
-#define PIN_RIGHT_BACKWARD            9
+#define PIN_STBY                      16 // standby pin for motors
+
+// BLE Pins (referenced in ble connection service and standard spi pins)
+
+// #define BLE_REQ                    4
+// #define BLE_RDY                    5
+// #define BLE_RST                    6
+// #define BLE_SCK                    13
+// #define BLE_MISO                   12
+// #define BLE_MOSI                   11
+
 
 // ============================================================
 // === Properties =============================================
 // ============================================================
 
-SoftwareSerial bluetooth(PIN_BLUETOOTH_RX, PIN_BLUETOOTH_TX); // RX, TX
+Motor lMotor = Motor(PIN_LEFT_FORWARD, PIN_LEFT_BACKWARD, PIN_LEFT_POWER, 1, PIN_STBY);
+Motor rMotor = Motor(PIN_RIGHT_BACKWARD, PIN_RIGHT_FORWARD, PIN_RIGHT_POWER, 1, PIN_STBY);
+
+BleConnectionService service = BleConnectionService();
 
 // ============================================================
 // === Methods ================================================
@@ -32,66 +45,34 @@ SoftwareSerial bluetooth(PIN_BLUETOOTH_RX, PIN_BLUETOOTH_TX); // RX, TX
 
 void setup() 
 {
-
-  pinMode(PIN_LED, OUTPUT);
-
-  pinMode(PIN_BLUETOOTH_RX, INPUT);
-  pinMode(PIN_BLUETOOTH_TX, OUTPUT );
-
-  pinMode(PIN_BLUETOOTH_RX, OUTPUT);
-  
-  pinMode(PIN_LEFT_POWER, OUTPUT);
-  pinMode(PIN_LEFT_FORWARD, OUTPUT);
-  pinMode(PIN_LEFT_BACKWARD, OUTPUT);
-
-  pinMode(PIN_RIGHT_POWER, OUTPUT);
-  pinMode(PIN_RIGHT_FORWARD, OUTPUT);
-  pinMode(PIN_RIGHT_BACKWARD, OUTPUT);
-
+  analogWriteFrequency(PIN_LEFT_POWER, 375000); // Teensy 3.0 pin 3 also changes to 375 kHz
   Serial.begin(9600);
-  bluetooth.begin(9600);
-  
-  //SPI.begin();
-  
+
+  service.begin();
+
 }
 
 void loop() 
 {
-  pinMode(PIN_LED, HIGH);
 
-  //char val = digitalRead(PIN_BLUETOOTH_TX);
-  //Serial.println(val);
-
-  while(bluetooth.available()) {
-    handleIncomingChar(bluetooth.read());
+  if (service.hasMessage() == true) {
+    //Serial.print(service.getMessage());
+    handleMessage(service.getMessage());
   }
 
+  service.doEvents();
+    
 }
 
 // ============================================================
 // === Message Handling =======================================
 // ============================================================
 
-char message[10] = "";
-int incomingCount = 0;
-
 /**
  * 
  */
-void handleIncomingChar(char incomingChar)
-{
-  message[incomingCount] = incomingChar;
-  incomingCount++;
-  if (incomingCount == 10) {
-    handleMessage();
-    incomingCount = 0;  
-  }
-}
 
-/**
- * 
- */
-void handleMessage() 
+void handleMessage(char* msg) 
 {
 
   int commaPosition = 10;
@@ -99,56 +80,37 @@ void handleMessage()
   String rms = "";
   
   for ( int i = 0; i < 10; i++) {
-    if (message[i] != ',' && i <= commaPosition) {
-      lms += message[i];
+    if (msg[i] != ',' && i <= commaPosition) {
+      lms += msg[i];
     } else {
-      if (message[i] == ',') {
+      if (msg[i] == ',') {
         commaPosition = i;
       } else {
-        if (message[i] != '&') {
-          rms += message[i];
+        if (msg[i] != '&') {
+          rms += msg[i];
         }
       }
     }
   }
 
-  updateMotors(lms.toInt(),rms.toInt());
-  
-}
+  // update motors
 
-/**
- * 
- */
-void updateMotors(int lms,int rms)
-{
+  int lmsInt = lms.toInt();
+  int rmsInt = rms.toInt();
 
-  if (lms == 0) {
-    digitalWrite(PIN_LEFT_FORWARD,LOW);
-    digitalWrite(PIN_LEFT_BACKWARD,LOW);
-  } else if (lms < 0) {
-    digitalWrite(PIN_LEFT_FORWARD,LOW);
-    digitalWrite(PIN_LEFT_BACKWARD,HIGH);
-  } else if (lms > 0) {
-    digitalWrite(PIN_LEFT_FORWARD,HIGH);
-    digitalWrite(PIN_LEFT_BACKWARD,LOW);
+Serial.println(lmsInt);
+Serial.println(rmsInt);
+
+  if (rmsInt == 0) {
+    rMotor.brake();
+  } else {
+    rMotor.drive(rmsInt);
   }
 
-  analogWrite(PIN_LEFT_POWER, abs(lms));
-
-  // assign speed and direction of right motor
-
-  if (rms == 0) {
-    digitalWrite(PIN_RIGHT_FORWARD,LOW);
-    digitalWrite(PIN_RIGHT_BACKWARD,LOW);
-  } else if (rms < 0) {
-    digitalWrite(PIN_RIGHT_FORWARD,LOW);
-    digitalWrite(PIN_RIGHT_BACKWARD,HIGH);
-  } else if (rms > 0) {
-    digitalWrite(PIN_RIGHT_FORWARD,HIGH);
-    digitalWrite(PIN_RIGHT_BACKWARD,LOW);
+  if (lmsInt == 0) {
+    lMotor.brake();
+  } else {
+    lMotor.drive(lmsInt);
   }
   
-  analogWrite(PIN_RIGHT_POWER, abs(rms));
- 
 }
-

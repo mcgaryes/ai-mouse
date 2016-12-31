@@ -23,9 +23,9 @@ protocol BLEDelegate
 
 class BLE: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     
-    let RBL_SERVICE_UUID = "713D0000-503E-4C75-BA94-3148F18D941E"
-    let RBL_CHAR_TX_UUID = "713D0002-503E-4C75-BA94-3148F18D941E"
-    let RBL_CHAR_RX_UUID = "713D0003-503E-4C75-BA94-3148F18D941E"
+    let RBL_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
+    let RBL_CHAR_TX_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
+    let RBL_CHAR_RX_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
     
     var delegate: BLEDelegate?
     
@@ -95,23 +95,23 @@ class BLE: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     func read()
     {
         
-        guard let char = self.characteristics[RBL_CHAR_TX_UUID] else { return }
+        guard let char = self.characteristics[RBL_CHAR_RX_UUID] else { return }
         
         self.activePeripheral?.readValue(for: char)
     }
     
     func write(data: NSData)
     {
-        
-        guard let char = self.characteristics[RBL_CHAR_RX_UUID] else { return }
-        
+        guard let char = self.characteristics[RBL_CHAR_TX_UUID] else { return }
+        print(char.uuid.uuidString)
+        print("writing data")
         self.activePeripheral?.writeValue(data as Data, for: char, type: .withoutResponse)
     }
     
     func enableNotifications(enable: Bool)
     {
         
-        guard let char = self.characteristics[RBL_CHAR_TX_UUID] else { return }
+        guard let char = self.characteristics[RBL_CHAR_RX_UUID] else { return }
         
         self.activePeripheral?.setNotifyValue(enable, for: char)
     }
@@ -185,8 +185,7 @@ class BLE: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         
         
         for service in peripheral.services! {
-            let theCharacteristics = [CBUUID(string: RBL_CHAR_RX_UUID), CBUUID(string: RBL_CHAR_TX_UUID)]
-            
+            let theCharacteristics = [CBUUID(string: RBL_CHAR_TX_UUID), CBUUID(string: RBL_CHAR_RX_UUID)]
             peripheral.discoverCharacteristics(theCharacteristics, for: service)
         }
     }
@@ -217,7 +216,7 @@ class BLE: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             return
         }
         
-        if characteristic.uuid.uuidString == RBL_CHAR_TX_UUID {
+        if characteristic.uuid.uuidString == RBL_CHAR_RX_UUID {
             
             self.delegate?.bleDidReceiveData(data: characteristic.value as NSData?)
         }
